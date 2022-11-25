@@ -19,7 +19,15 @@ const apiRoute = createRouter({
     },
 }).get(async (req, res) => {
     try {
-        const getAllDokter = await prisma.dokter.findMany()
+        const getAllDokter = await prisma.dokter.findMany({
+            include : {
+                klinik : {
+                    include : {
+                        rumah_sakit : true
+                    }
+                }
+            }
+        })
         return res.status(200).json({
             status : "success",
             data : getAllDokter
