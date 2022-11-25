@@ -2,8 +2,8 @@ import Link from "next/link"
 
 const navData = [
     { title: "Beranda", path: "/" },
-    { title: "Artikel", path: "/artikel" },
     { title: "Cari Dokter", path: "/dokter" },
+    { title: "Artikel", path: "/artikel" },
 ]
 
 export default function Header() {
