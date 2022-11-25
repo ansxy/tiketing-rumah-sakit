@@ -1,7 +1,17 @@
 import DokterCard from "../../components/dokter-card"
 import DokterSearchForm from "../../components/dokter-search-form"
 
-export default function Page() {
+async function getData() {
+    const res = await fetch('http://localhost:3000/api/user/dokter/1');
+    
+    if(!res.ok){
+        console.log("error getting data")
+    }
+    return res.json()
+}
+
+export default async function Page() {
+    const data = await getData();
     return (
         <main className="w-full">
             <section className="w-full flex flex-col justify-center items-center py-36 bg-healtick-cream">
@@ -15,7 +25,11 @@ export default function Page() {
                     <DokterSearchForm />
                 </aside>
                 <div className="px-3 grid grid-cols-3 gap-4 basis-2/3">
-                    <DokterCard />
+                    {data.data.map((data) => {
+                        return <>
+                            <DokterCard data={data}/>
+                        </>
+                    })}
                 </div>
             </section>
         </main>
