@@ -1,3 +1,7 @@
 export default function Footer() {
-    return <div>Footer</div>
+    return (
+        <footer className="w-full bg-healtick-green text-white flex justify-center p-6 font-xs">
+            Made by Xploratech Copyright@2021
+        </footer>
+    )
 }
