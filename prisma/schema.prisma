@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model dokter {
+  id String @id @default(cuid())
+  nama String
+  spesialisasi_dokter spesialisasi_dokter?
+  klinik klinik @relation(fields: [klinikid],references: [id])
+  klinikid String
+  foto String
+  dokter_hari_praktek dokter_hari_praktek[]
+}
+
+model spesialis {
+  id String @id @default(cuid())
+  name String
+  spesialisasi_dokter spesialisasi_dokter[]
+}
+
+model spesialisasi_dokter {
+  id String @id @default(cuid())
+  dokter dokter @relation(fields: [dokterId],references: [id], onDelete: Cascade)
+  dokterId String @unique
+  spesiliasasi spesialis @relation(fields: [spesiliasasiId],references: [id] , onDelete: Cascade)
+  spesiliasasiId String
+}
+
+
+model rumah_sakit {
+  id String @id @default(cuid())
+  nama String
+  alamat String
+  pinpoint String
+  klinik klinik[]
+  nomor_telepon String
+  logo String
+}
+
+model klinik {
+  id String @id @default(cuid())
+  nama String
+  rumah_sakit rumah_sakit @relation(fields: [rumah_sakitid],references: [id])
+  rumah_sakitid String
+  dokter dokter[]
+}
+
+model pasien {
+  id String @id @default(cuid())
+  nama String
+  nohp String
+  tanggal_lahir String
+  jenis_kelamin String
+}
+
+model dokter_hari_praktek {
+  id String @id @default(cuid())
+  dokter dokter @relation(fields: [dokterid], references: [id])
+  dokterid String
+  hari DateTime
+  jam_praktek jam_praktek[]
+}
+
+model jam_praktek {
+  id String @id @default(cuid())
+  dokter_hari_praktek dokter_hari_praktek @relation(fields: [dokter_hari_praktekid], references: [id])
+  dokter_hari_praktekid String
+  start_time DateTime
+  end_time DateTime
+  tiket tiket[]
+}
+
+model tiket {
+  id String @id @default(cuid())
+  jam_praktek jam_praktek @relation(fields: [jam_praktekId], references: [id])
+  jam_praktekId String
+  create_time DateTime
+}
+
+
+model post{
+  id String @id @default(cuid())
+  post_name String
+  destail_post String
+  comment comment []
+}
+
+model comment {
+  id String @id @default(cuid())
+  post post @relation(fields: [postId],references: [id])
+  postId String
+  comment String
+}
+
