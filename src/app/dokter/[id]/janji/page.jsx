@@ -2,33 +2,32 @@
 import axios from "axios"
 import { useState } from "react"
 import { FcGoogle } from "react-icons/fc"
-import {signIn, useSession} from 'next-auth/react'
+import { signIn, useSession } from "next-auth/react"
 
 export default function Page() {
-    // const [session, setSession] = useState(false)
     const { data: session, status } = useSession()
-    const [data,setData] = useState({
-        email : "",
-        password : "",
+    const [data, setData] = useState({
+        email: "",
+        password: "",
     })
-    console.log(session)
 
     const handleGoogleLoging = (e) => {
-        e.preventDefault();
-        signIn('google')
+        e.preventDefault()
+        signIn("google")
     }
 
     const handleChange = (e) => {
         e.preventDefault()
         setData({
             ...data,
-            [e.target.name] : e.target.value
+            [e.target.name]: e.target.value,
         })
     }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post('/api/user/auth/registrasi',data)
+            const res = await axios.post("/api/user/auth/registrasi", data)
             return res
         } catch (error) {
             console.log(error)
@@ -54,15 +53,58 @@ export default function Page() {
                         <p>Alamat</p>
                     </div>
                 </aside>
-                <div className="flex w-full px-96">
+                <div className="flex w-full px-72">
                     {session ? (
-                        <>
-                            <button>Tambah Keluarga</button>
-                            <form></form>
-                        </>
+                        <div className="flex flex-col justify-center items-center w-full shadow-lg">
+                            <div className="flex flex-col w-full px-12 pt-8 pb-4 rounded-md">
+                                <div className="flex flex-row justify-between text-lg font-semibold my-2">
+                                    <button>Tambah Keluarga</button>
+                                    <button>Ganti Pasien</button>
+                                </div>
+                                <h2 className="font-medium">Pasien :</h2>
+                                <div className="flex flex-row mt-2 px-4 py-6 items-center gap-6 border border-healtick-green rounded-lg">
+                                    <div className="w-24 h-24 rounded-full bg-slate-500"></div>
+                                    <div className="flex flex-col">
+                                        <h3 className="font-semibold">
+                                            Nama Pasien
+                                        </h3>
+                                        <p className="font-medium">
+                                            <span>(Umur Pasien)</span> Tanggal
+                                            Lahir
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <form className="flex flex-col gap-2 w-2/3">
+                                <div className="flex flex-col gap-1">
+                                    <label>Tanggal Janji</label>
+                                    <input
+                                        type="date"
+                                        className="border p-2 rounded-md"
+                                    />
+                                </div>
+                                <div className="flex flex-row gap-2">
+                                    <input type="checkbox" />
+                                    <label>Saya menggunakan BPJS</label>
+                                </div>
+                                <div className="w-full flex flex-row gap-4">
+                                    <button className="basis-1/2 bg-red-500 text-white mb-4 rounded-md py-2">
+                                        Cancel
+                                    </button>
+                                    <input
+                                        type="submit"
+                                        className="basis-1/2 bg-healtick-green text-white mb-4 rounded-md py-2"
+                                    />
+                                </div>
+                            </form>
+                        </div>
                     ) : (
                         <div className="flex flex-col justify-center items-center w-full">
-                            <form className="flex flex-col w-full gap-4" onSubmit={handleSubmit} method="GET">
+                            <form
+                                className="flex flex-col w-full gap-4"
+                                onSubmit={handleSubmit}
+                                method="GET"
+                            >
                                 <div className="flex flex-col">
                                     <label htmlFor="email">E-mail</label>
                                     <input
@@ -82,11 +124,14 @@ export default function Page() {
                                     ></input>
                                 </div>
                                 <div className="flex justify-center items-center py-3 rounded-lg my-2 bg-healtick-darkgreen text-white">
-                                    <input type="submit"/>
+                                    <input type="submit" />
                                 </div>
                             </form>
                             <h3 className="my-2 font-medium">Or</h3>
-                            <button className="flex flex-row justify-center items-center text-white bg-blue-400 font-semibold gap-2 rounded-md border px-6 py-3 my-2" onClick={handleGoogleLoging}>
+                            <button
+                                className="flex flex-row justify-center items-center text-white bg-blue-400 font-semibold gap-2 rounded-md border px-6 py-3 my-2"
+                                onClick={handleGoogleLoging}
+                            >
                                 <span>
                                     <FcGoogle />
                                 </span>
