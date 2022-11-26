@@ -3,7 +3,7 @@ import axios from "axios"
 import { useState, useEffect } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { FetchDokter } from "../../../../lib/fetch-dokter"
 
 export default function Page() {
@@ -24,8 +24,6 @@ export default function Page() {
 
         getDokterData()
     }, [id])
-
-    console.log(dokterData)
 
     const handleGoogleLoging = (e) => {
         e.preventDefault()
