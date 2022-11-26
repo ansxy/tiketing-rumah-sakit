@@ -23,7 +23,11 @@ const apiRoute = createRouter({
             include : {
                 klinik : {
                     include : {
-                        rumah_sakit : true
+                        rumah_sakit : {
+                            select : {
+                                nama : true
+                            }
+                        }
                     }
                 }
             }
@@ -40,8 +44,6 @@ const apiRoute = createRouter({
 }).post(async (req,res) => {
     // TODO : Put rumah_sakitid to params
     const {nama,klinikId} = req.body
-    // const {file} = req.file
-    // console.log(file)
     try {
         const createKlinik = await prisma.klinik.create({
             data : {
