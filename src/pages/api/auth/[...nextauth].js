@@ -1,3 +1,4 @@
+import { promises } from "form-data";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -5,9 +6,32 @@ export const authOptions = {
     providers : [
         GoogleProvider({
             clientId : process.env.GOOGLE_CLIENT_ID,
-            clientSecret : process.env.GOOGLE_CLIENT_SECRET
+            clientSecret : process.env.GOOGLE_CLIENT_SECRET,
+            authorization: {
+                params: {
+                  prompt: "consent",
+                  access_type: "offline",
+                  response_type: "code"
+                }
+              }
         })
-    ]
+    ],
+    callbacks : {
+        async signIn({account ,profile}){
+            return true;
+        }
+    },
+    session : async ({
+        session
+    }) => {
+        return session
+    },
+    redirect : async (
+
+    url,_baseUrl) => {
+        return Promise.resolve('/')
+    }
 };
+
 
 export default NextAuth(authOptions)
