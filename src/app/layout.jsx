@@ -6,7 +6,7 @@ import Footer from "../components/footer"
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
-            <body className="w-screen h-full">
+            <body className="w-screen h-full overflow-x-hidden">
                 <Header />
                 {children}
                 <Footer />
