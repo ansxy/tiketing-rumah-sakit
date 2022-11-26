@@ -4,6 +4,7 @@ const navData = [
     { title: "Beranda", path: "/" },
     { title: "Artikel", path: "/artikel" },
     { title: "Cari Dokter", path: "/dokter" },
+    { title: "Login", path: "/signin" },
 ]
 
 export default function Header() {

@@ -1,16 +1,30 @@
 "use client"
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
+import { usePathname, useRouter } from "next/navigation"
+import { FetchDokter } from "../../../../lib/fetch-dokter"
 
-export default function Page() {
-    const { data: session, status } = useSession()
-    const [data, setData] = useState({
+export default function Page({ params }) {
+    const { id } = params
+    const { sessionData: session, status } = useSession()
+    const [loginData, setLoginData] = useState({
         email: "",
         password: "",
     })
+    const [dokterData, setDokterData] = useState(null)
 
+    useEffect(() => {
+        async function getDokterData() {
+            const dokterData = await FetchDokter({ id })
+            setDokterData(dokterData)
+        }
+
+        getDokterData()
+    }, [id])
+
+    console.log()
     const handleGoogleLoging = (e) => {
         e.preventDefault()
         signIn("google")
@@ -18,8 +32,8 @@ export default function Page() {
 
     const handleChange = (e) => {
         e.preventDefault()
-        setData({
-            ...data,
+        setLoginData({
+            ...loginData,
             [e.target.name]: e.target.value,
         })
     }
@@ -27,7 +41,7 @@ export default function Page() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post("/api/user/auth/registrasi", data)
+            const res = await axios.post("/api/user/auth/registrasi", loginData)
             return res
         } catch (error) {
             console.log(error)
