@@ -1,19 +1,20 @@
 "use client"
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
-import Image from "next/image"
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { usePathname } from "next/navigation"
+import { FetchDokter } from "../../../../lib/fetch-dokter"
 
 export default function Page() {
-    const { data: session, status } = useSession()
-    const [startDate ,setDate] = useState(new Date())
-    const [data, setData] = useState({
+    const id = usePathname().split("/")[2]
+
+    const { sessionData: session, status } = useSession()
+    const [loginData, setLoginData] = useState({
         email: "",
         password: "",
     })
+
     const handleGoogleLoging = (e) => {
         e.preventDefault()
         signIn("google")
@@ -21,8 +22,8 @@ export default function Page() {
 
     const handleChange = (e) => {
         e.preventDefault()
-        setData({
-            ...data,
+        setLoginData({
+            ...loginData,
             [e.target.name]: e.target.value,
         })
     }
@@ -30,7 +31,7 @@ export default function Page() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post("/api/user/auth/registrasi", data)
+            const res = await axios.post("/api/user/auth/registrasi", loginData)
             return res
         } catch (error) {
             console.log(error)
@@ -45,7 +46,7 @@ export default function Page() {
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">Info Dokter</h2>
                         <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        <h3>Nama Dokter</h3>
+                        <h3>{dokterData.nama}</h3>
                         <p>Spesialis</p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
