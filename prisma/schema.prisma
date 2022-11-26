@@ -56,10 +56,19 @@ model klinik {
 model pasien {
   id String @id @default(cuid())
   nama String
-  nohp String
-  tanggal_lahir String
-  jenis_kelamin String
+  nohp String?
+  email String
+  tanggal_lahir String?
+  jenis_kelamin String?
+  tipe_darah String?
+  nik String?
+  nama_bapak  String?
+  nama_ibu  String?
+  nomor_bpjs String?
+  password String
+  alamat String?
 }
+
 
 model dokter_hari_praktek {
   id String @id @default(cuid())
