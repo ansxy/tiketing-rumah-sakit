@@ -3,28 +3,28 @@ import axios from "axios"
 import { useState, useEffect } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { FetchDokter } from "../../../../lib/fetch-dokter"
 
-export default function Page({ params }) {
-    const { id } = params
+export default function Page() {
+    const id = usePathname().split("/")[2]
+
     const { sessionData: session, status } = useSession()
     const [loginData, setLoginData] = useState({
         email: "",
         password: "",
     })
-    const [dokterData, setDokterData] = useState(null)
+    const [dokterData, setDokterData] = useState({})
 
     useEffect(() => {
         async function getDokterData() {
-            const dokterData = await FetchDokter({ id })
-            setDokterData(dokterData)
+            const { data } = await FetchDokter({ id })
+            setDokterData(data)
         }
 
         getDokterData()
     }, [id])
 
-    console.log()
     const handleGoogleLoging = (e) => {
         e.preventDefault()
         signIn("google")
@@ -55,7 +55,7 @@ export default function Page({ params }) {
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">Info Dokter</h2>
                         <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        <h3>Nama Dokter</h3>
+                        <h3>{dokterData.nama}</h3>
                         <p>Spesialis</p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
