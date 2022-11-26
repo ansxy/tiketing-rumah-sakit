@@ -33,7 +33,7 @@ export default function DokterSearchForm() {
 
 
     const handleNameChange = (e) => {
-        setNameSearch(e)
+        setDataNama(e)
     }
 
     const handleSpesialisChange = (e) => {
@@ -62,7 +62,7 @@ export default function DokterSearchForm() {
                 <label htmlFor="nama-dokter" className="font-medium">
                     Nama Dokter
                 </label>
-                <SelectSearch search={true} value={dataNama} placeholder="Cari Dokter   " getOptions={getDokter} onChange={handleNameChange}/>
+                <SelectSearch search={true} value={dataNama} placeholder="Cari Dokter  " getOptions={getDokter} onChange={handleNameChange}/>
             </div>
             <div className="flex flex-col ">
                 <label htmlFor="pilih-spesialis" className="font-medium">
