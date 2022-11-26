@@ -3,14 +3,17 @@ import axios from "axios"
 import { useState } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
+import Image from "next/image"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Page() {
     const { data: session, status } = useSession()
+    const [startDate ,setDate] = useState(new Date())
     const [data, setData] = useState({
         email: "",
         password: "",
     })
-
     const handleGoogleLoging = (e) => {
         e.preventDefault()
         signIn("google")
@@ -33,6 +36,7 @@ export default function Page() {
             console.log(error)
         }
     }
+
     return (
         <main className="w-full h-screen flex flex-col justify-center px-16 gap-4">
             <h1 className="text-2xl font-bold">Buat Janji</h1>
@@ -63,10 +67,12 @@ export default function Page() {
                                 </div>
                                 <h2 className="font-medium">Pasien :</h2>
                                 <div className="flex flex-row mt-2 px-4 py-6 items-center gap-6 border border-healtick-green rounded-lg">
-                                    <div className="w-24 h-24 rounded-full bg-slate-500"></div>
+                                    <div className="w-24 h-24 rounded-full bg-slate-500">
+                                        <Image src={session.user.image} width={500} height={500} alt="imageprofile" className="rounded-full"/>
+                                    </div>
                                     <div className="flex flex-col">
                                         <h3 className="font-semibold">
-                                            Nama Pasien
+                                            {session.user.name}
                                         </h3>
                                         <p className="font-medium">
                                             <span>(Umur Pasien)</span> Tanggal
@@ -78,10 +84,16 @@ export default function Page() {
                             <form className="flex flex-col gap-2 w-2/3">
                                 <div className="flex flex-col gap-1">
                                     <label>Tanggal Janji</label>
-                                    <input
-                                        type="date"
+                                    <DatePicker
+                                        selected={startDate}
+                                        value = {startDate}
+                                        minDate={startDate}
                                         className="border p-2 rounded-md"
                                     />
+                                    {/* <input
+                                        type="date"
+                                        className="border p-2 rounded-md"
+                                    /> */}
                                 </div>
                                 <div className="flex flex-row gap-2">
                                     <input type="checkbox" />

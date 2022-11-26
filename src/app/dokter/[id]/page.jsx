@@ -12,6 +12,6 @@ async function generateStaticParams() {
 export default async function Page({ params }) {
     const { id } = params
     const data = await FetchDokter({ id })
-
+    
     return <main className="w-full">Detail Dokter</main>
 }
