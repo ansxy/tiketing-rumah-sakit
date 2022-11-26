@@ -1,6 +1,6 @@
 import DokterCard from "../../components/dokter-card"
 import DokterSearchForm from "../../components/dokter-search-form"
-import { FetchDokters } from "../../lib/fetchDokters"
+import { FetchDokters } from "../../lib/fetch-dokters"
 
 export default async function Page() {
     const datas = await FetchDokters()

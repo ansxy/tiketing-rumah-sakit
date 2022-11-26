@@ -1,5 +1,5 @@
-import { FetchDokter } from "../../../lib/fetchDokter"
-import { FetchDokters } from "../../../lib/fetchDokters"
+import { FetchDokter } from "../../../lib/fetch-dokter"
+import { FetchDokters } from "../../../lib/fetch-dokters"
 
 async function generateStaticParams() {
     const datas = await FetchDokters()
