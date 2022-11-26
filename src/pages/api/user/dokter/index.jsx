@@ -46,16 +46,19 @@ const apiRoute = createRouter({
     .post(async (req, res) => {
         // TODO : Put rumah_sakitid to params
         const { nama, klinikId } = req.body
+        // const {file} = req.file
+        // console.log(file)
         try {
-            const createKlinik = await prisma.klinik.create({
+            const createDokter = await prisma.dokter.create({
                 data: {
                     nama: nama,
-                    rumah_sakitid: rumah_sakitid,
+                    klinikid: klinikId,
+                    foto: "AAAA",
                 },
             })
             return res.status(200).json({
                 status: "success",
-                data: createKlinik,
+                data: createDokter,
             })
         } catch (error) {
             return res.status(404).json({ status: error.message })
