@@ -1,20 +1,20 @@
-import multer from "multer";
-import { createRouter } from "next-connect";
-import prisma from "../../../../lib/prisma";
+import multer from "multer"
+import { createRouter } from "next-connect"
+import prisma from "../../../../lib/prisma"
 
 const upload = multer({
     storage: multer.diskStorage({
-      destination: './public/image',
-      filename: (req, file, cb) => cb(null, file.originalname),
+        destination: "./public/image",
+        filename: (req, file, cb) => cb(null, file.originalname),
     }),
-  });
-  
-const uploadMiddleware = upload.single('file')
+})
+
+const uploadMiddleware = upload.single("file")
 
 const apiRoute = createRouter({
-    onNoMatch(req,res) {
+    onNoMatch(req, res) {
         res.status(405).json({
-            error : `Method '${req.method}' Not Allowed`
+            error: `Method '${req.method}' Not Allowed`,
         })
     },
 }).get(async (req, res) => {
@@ -60,9 +60,9 @@ const apiRoute = createRouter({
     }
 }).use(uploadMiddleware)
 
-export default apiRoute.handler();
+export default apiRoute.handler()
 export const config = {
-  api: {
-    bodyParser: true, // Disallow body parsing, consume as stream
-  },
-};
+    api: {
+        bodyParser: true, // Disallow body parsing, consume as stream
+    },
+}
