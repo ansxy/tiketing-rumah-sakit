@@ -36,20 +36,20 @@ apiRoute.post('/api/tiket/:index', async (req, res) => {
         _count : {
           select : {tiket : true},
         },
-      }
+      },
     })
-    const createTiket = await prisma.tiket.create({
-      data : {
-        jam_praktekId : index,
-        emailId : email,
-        create_time : moment().toDate()
-      }  
-    }) 
-
+    
+    // const createTiket = await prisma.tiket.create({
+    //   data : {
+    //     jam_praktekId : "clayqitcz0007edd4hu6ce261",
+    //     emailId : email,
+    //     create_time : moment().toDate()
+    //   }  
+    // }) 
     return res.status(200).json({
       status : 'success',
-      urutan : countJam[0]._count.tiket + 1,
-      waktu : createTiket
+      // urutan : countJam[0]._count.tiket + 1,
+      waktu : countJam
     })
   } catch (error) {
     return res.status(500).json({error: error.message})

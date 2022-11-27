@@ -27,9 +27,13 @@ const apiRoute = createRouter({
         }
     })
     .get(async (req, res) => {
+        const {praktek} = req.query
         try {
             const getHariPraktekDokter =
                 await prisma.dokter_hari_praktek.findMany({
+                    where : {
+                        id : praktek 
+                    },
                     include: {
                         jam_praktek: true,
                     },

@@ -26,22 +26,26 @@ const apiRoute = createRouter({
         return res.status(404).json({ status: error.message })
     }
 })
-// .get(async(req,res) => {
-//     const {id} = req.query
-//     try {
-//         const getDokterBySpesialisId = await prisma.dokter.findMany({
-//             where : {
-//                 id : id
-//             },
-//             include :{
-//                 klinik : true
-//             }
-//         })
-//         return res.status(200).json(getDokterBySpesialisId)
-//     } catch (error) {
-//         res.status(404).json({ status : error.message})
-//     }
-// })
+.get(async(req,res) => {
+    const {jam} = req.query
+    try {
+        const getJamPraktek = await prisma.dokter.findMany({
+            where : {
+                id : jam
+            },
+            include : {
+                dokter_hari_praktek : {
+                    include : {
+                        jam_praktek : true
+                    }
+                } 
+            }
+        })
+        return res.status(200).json(getJamPraktek)
+    } catch (error) {
+        res.status(404).json({ status : error.message})
+    }
+})
 export default apiRoute.handler()
 export const config = {
     api: {

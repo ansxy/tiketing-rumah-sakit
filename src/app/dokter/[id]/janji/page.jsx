@@ -21,6 +21,14 @@ export default function Page() {
     const [getData,setData] = useState()
 
     useEffect(() => {
+        const getData = async () => {
+            const res =await axios.get(`/api/rumahsakit/klinik/praktek/jam/${id}`)
+            console.log(res)
+        }
+       getData() 
+    },[id])
+
+    useEffect(() => {
         const getData = async() =>{
             const res = await axios.get(`/api/spesialisasi/dokter/${id}`)
             setData(res ? res.data: "")   
@@ -28,13 +36,7 @@ export default function Page() {
         getData()
     }, [id])
 
-    console.log(getData ? getData : "")
-
-    const [tiket,setTiket] = useState({
-        email : session ? session.user.email : ""
-        
-    })
-
+    const [tiket,setTiket] = useState()
     const handleGoogleLoging = (e) => {
         e.preventDefault()
         signIn("google")
@@ -64,16 +66,18 @@ export default function Page() {
             console.log(error)
         }
     }
+
     
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setTiket({email : session ? session.user.email : ""})
         try {
             const data = await axios({
-                method : 'post',
+                method : 'POST',
                 url : `/api/tiket/${id}`,
                 data : tiket
             })
-            console.log(data)
+            return data
         } catch (error) {
             console.log(error)
         }
@@ -98,12 +102,16 @@ export default function Page() {
                         )}
                     </div>
                     <div className="flex flex-col justify-center items-center">
-                        <h2 className="text-lg font-semibold">
-                            Info Rumah Sakit
-                        </h2>
-                        <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        <h3>Nama Rumah Sakit</h3>
-                        <p>Alamat</p>
+                        {getData ? (
+                            <>
+                                <h2 className="text-lg font-semibold">
+                                    Info Rumah Sakit
+                                </h2>
+                                <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
+                                <h3>{getData.klinik.rumah_sakit.nama}</h3>
+                                <p>{getData.klinik.rumah_sakit.alamat}</p>
+                            </>
+                        ) : (<></>)}
                     </div>
                 </aside>
                 <div className="flex w-full px-72">
