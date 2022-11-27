@@ -28,14 +28,18 @@ const apiRoute = createRouter({
         }
     })
     .get(async (req, res) => {
-        const { id } = req.query
+        const { dokter } = req.query
         try {
             const getDokterBySpesialisId = await prisma.dokter.findFirst({
                 where: {
-                    id: id,
+                    id: dokter,
                 },
                 include: {
-                    klinik: true,
+                    klinik: {
+                        include : {
+                            rumah_sakit : true
+                        }
+                    },
                     spesialisasi_dokter: {
                         include: {
                             spesiliasasi: true,

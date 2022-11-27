@@ -3,28 +3,39 @@ import axios from "axios"
 import { useState, useEffect } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
-import { usePathname, useRouter } from "next/navigation"
-import { FetchDokter } from "../../../../lib/fetch-dokter"
+import { usePathname } from "next/navigation"
+import Image from "next/image"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
-export default function Page({ params }) {
-    const { id } = params
-    const { sessionData: session, status } = useSession()
+export default function Page() {
+    const id = usePathname().split("/")[2]
+    const [startDate, setDate] = useState(new Date())
+    const { data: session, status } = useSession()
     const [loginData, setLoginData] = useState({
         email: "",
         password: "",
     })
-    const [dokterData, setDokterData] = useState(null)
+
+    const [getData, setData] = useState()
 
     useEffect(() => {
-        async function getDokterData() {
-            const dokterData = await FetchDokter({ id })
-            setDokterData(dokterData)
+        const getData = async () => {
+            const res =await axios.get(`/api/rumahsakit/klinik/praktek/jam/${id}`)
+            console.log(res)
         }
+       getData() 
+    },[id])
 
-        getDokterData()
+    useEffect(() => {
+        const getData = async() =>{
+            const res = await axios.get(`/api/spesialisasi/dokter/${id}`)
+            setData(res ? res.data : "")
+        }
+        getData()
     }, [id])
 
-    console.log()
+    const [tiket,setTiket] = useState()
     const handleGoogleLoging = (e) => {
         e.preventDefault()
         signIn("google")
@@ -38,7 +49,11 @@ export default function Page({ params }) {
         })
     }
 
-    const handleSubmit = async (e) => {
+    const handleDate = (e) => {
+        setDate(e)
+    }
+
+    const handleLogin = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.post("/api/user/auth/registrasi", loginData)
@@ -47,24 +62,57 @@ export default function Page({ params }) {
             console.log(error)
         }
     }
+
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setTiket({email : session ? session.user.email : ""})
+        try {
+            const data = await axios({
+                method : 'POST',
+                url : `/api/tiket/${id}`,
+                data : tiket
+            })
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
-        <main className="w-full h-screen flex flex-col justify-center px-16 gap-4">
+        <>
             <h1 className="text-2xl font-bold">Buat Janji</h1>
             <section className="flex flex-row w-full">
                 <aside className="shadow-md justify-center items-center flex flex-col gap-2 px-6 py-12 whitespace-nowrap">
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">Info Dokter</h2>
                         <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        <h3>Nama Dokter</h3>
-                        <p>Spesialis</p>
+
+                        {getData ? (
+                            <>
+                                <h3>{getData.nama}</h3>
+                                <p>
+                                    {
+                                        getData.spesialisasi_dokter.spesiliasasi
+                                            .name
+                                    }
+                                </p>
+                            </>
+                        ) : (
+                            <></>
+                        )}
                     </div>
                     <div className="flex flex-col justify-center items-center">
-                        <h2 className="text-lg font-semibold">
-                            Info Rumah Sakit
-                        </h2>
-                        <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        <h3>Nama Rumah Sakit</h3>
-                        <p>Alamat</p>
+                        {getData ? (
+                            <>
+                                <h2 className="text-lg font-semibold">
+                                    Info Rumah Sakit
+                                </h2>
+                                <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
+                                <h3>{getData.klinik.rumah_sakit.nama}</h3>
+                                <p>{getData.klinik.rumah_sakit.alamat}</p>
+                            </>
+                        ) : (<></>)}
                     </div>
                 </aside>
                 <div className="flex w-full px-72">
@@ -77,10 +125,18 @@ export default function Page({ params }) {
                                 </div>
                                 <h2 className="font-medium">Pasien :</h2>
                                 <div className="flex flex-row mt-2 px-4 py-6 items-center gap-6 border border-healtick-green rounded-lg">
-                                    <div className="w-24 h-24 rounded-full bg-slate-500"></div>
+                                    <div className="w-24 h-24 rounded-full bg-slate-500">
+                                        <Image
+                                            src={session.user.image}
+                                            width={500}
+                                            height={500}
+                                            alt="imageprofile"
+                                            className="rounded-full"
+                                        />
+                                    </div>
                                     <div className="flex flex-col">
                                         <h3 className="font-semibold">
-                                            Nama Pasien
+                                            {session.user.name}
                                         </h3>
                                         <p className="font-medium">
                                             <span>(Umur Pasien)</span> Tanggal
@@ -92,9 +148,12 @@ export default function Page({ params }) {
                             <form className="flex flex-col gap-2 w-2/3">
                                 <div className="flex flex-col gap-1">
                                     <label>Tanggal Janji</label>
-                                    <input
-                                        type="date"
+                                    <DatePicker
+                                        selected={startDate}
+                                        value={startDate}
+                                        minDate={startDate}
                                         className="border p-2 rounded-md"
+                                        onChange={handleDate}
                                     />
                                 </div>
                                 <div className="flex flex-row gap-2">
@@ -107,6 +166,7 @@ export default function Page({ params }) {
                                     </button>
                                     <input
                                         type="submit"
+                                        onClick={handleSubmit}
                                         className="basis-1/2 bg-healtick-green text-white mb-4 rounded-md py-2"
                                     />
                                 </div>
@@ -116,7 +176,7 @@ export default function Page({ params }) {
                         <div className="flex flex-col justify-center items-center w-full">
                             <form
                                 className="flex flex-col w-full gap-4"
-                                onSubmit={handleSubmit}
+                                onSubmit={handleLogin}
                                 method="GET"
                             >
                                 <div className="flex flex-col">
@@ -155,6 +215,6 @@ export default function Page({ params }) {
                     )}
                 </div>
             </section>
-        </main>
+        </>
     )
 }

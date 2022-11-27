@@ -19,7 +19,6 @@ const apiRoute = createRouter({
 })
     .get(async (req, res) => {
         const { email, password } = req.body
-        console.log(req.body)
         try {
             const verifiyLogin = await prisma.pasien.findFirst({
                 where: {

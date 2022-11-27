@@ -1,5 +1,6 @@
 import {createRouter} from 'next-connect'
 import prisma from '../../../lib/prisma';
+var moment = require('moment');
 
 const apiRoute =  createRouter({
     onNoMatch(req,res){
@@ -22,38 +23,41 @@ const apiRoute =  createRouter({
   } catch (error) {
     return res.status(500).json({error: error.message})
   }
-}).post(async(req,res)=> {
-  const {tiket} = req.query
+})
+apiRoute.post('/api/tiket/:index', async (req, res) => {
+  const {index} = req.query
+  const {email} = req.body
   try {
     const countJam = await prisma.jam_praktek.findMany({
       where : {
-        id : tiket
+        id : index
       },
       include : {
         _count : {
           select : {tiket : true},
         },
-      }
+      },
     })
-    const createTiket = await prisma.tiket.create({
-      data : {
-        jam_praktekId : tiket,
-        create_time : "2022-11-25T13:15:30.000Z"
-      }  
-    })
+    
+    // const createTiket = await prisma.tiket.create({
+    //   data : {
+    //     jam_praktekId : "clayqitcz0007edd4hu6ce261",
+    //     emailId : email,
+    //     create_time : moment().toDate()
+    //   }  
+    // }) 
     return res.status(200).json({
       status : 'success',
-      urutan : countJam[0]._count.tiket + 1,
-      waktu : createTiket
+      // urutan : countJam[0]._count.tiket + 1,
+      waktu : countJam
     })
   } catch (error) {
     return res.status(500).json({error: error.message})
   }
 })
-
 export default apiRoute.handler();
 export const config = {
   api: {
-    bodyParser: false, // Disallow body parsing, consume as stream
+    bodyParser: true, // Disallow body parsing, consume as stream
   },
 };

@@ -8,9 +8,9 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <SessionProvider>
-                <body className="w-screen h-full overflow-x-hidden">
+                <body className="overflow-x-hidden">
                     <Header />
-                    {children}
+                    <main className="w-screen h-full">{children}</main>
                     <Footer />
                 </body>
             </SessionProvider>
