@@ -42,7 +42,7 @@ model rumah_sakit {
   pinpoint String
   klinik klinik[]
   nomor_telepon String
-  logo String
+  foto String
 }
 
 model klinik {
