@@ -6,19 +6,18 @@ import { signIn, useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
 import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css";
-import { FetchDokter } from "../../../../lib/fetch-dokter"
+import "react-datepicker/dist/react-datepicker.css"
 
 export default function Page() {
     const id = usePathname().split("/")[2]
-    const [startDate , setDate] = useState(new Date())
+    const [startDate, setDate] = useState(new Date())
     const { data: session, status } = useSession()
     const [loginData, setLoginData] = useState({
         email: "",
         password: "",
     })
 
-    const [getData,setData] = useState()
+    const [getData, setData] = useState()
 
     useEffect(() => {
         const getData = async () => {
@@ -31,8 +30,8 @@ export default function Page() {
     useEffect(() => {
         const getData = async() =>{
             const res = await axios.get(`/api/spesialisasi/dokter/${id}`)
-            setData(res ? res.data: "")   
-        } 
+            setData(res ? res.data : "")
+        }
         getData()
     }, [id])
 
@@ -50,12 +49,9 @@ export default function Page() {
         })
     }
 
-
     const handleDate = (e) => {
         setDate(e)
     }
-
-
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -95,7 +91,12 @@ export default function Page() {
                         {getData ? (
                             <>
                                 <h3>{getData.nama}</h3>
-                                <p>{getData.spesialisasi_dokter.spesiliasasi.name}</p>
+                                <p>
+                                    {
+                                        getData.spesialisasi_dokter.spesiliasasi
+                                            .name
+                                    }
+                                </p>
                             </>
                         ) : (
                             <></>
@@ -125,7 +126,13 @@ export default function Page() {
                                 <h2 className="font-medium">Pasien :</h2>
                                 <div className="flex flex-row mt-2 px-4 py-6 items-center gap-6 border border-healtick-green rounded-lg">
                                     <div className="w-24 h-24 rounded-full bg-slate-500">
-                                        <Image src={session.user.image} width={500} height={500} alt="imageprofile" className="rounded-full"/>
+                                        <Image
+                                            src={session.user.image}
+                                            width={500}
+                                            height={500}
+                                            alt="imageprofile"
+                                            className="rounded-full"
+                                        />
                                     </div>
                                     <div className="flex flex-col">
                                         <h3 className="font-semibold">
@@ -143,7 +150,7 @@ export default function Page() {
                                     <label>Tanggal Janji</label>
                                     <DatePicker
                                         selected={startDate}
-                                        value = {startDate}
+                                        value={startDate}
                                         minDate={startDate}
                                         className="border p-2 rounded-md"
                                         onChange={handleDate}
