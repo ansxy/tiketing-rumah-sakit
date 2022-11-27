@@ -30,7 +30,7 @@ const apiRoute = createRouter({
                     alamat: alamat,
                     pinpoint: pinpoint,
                     nomor_telepon: nomor_telepon,
-                    logo: "AAAA",
+                    foto: "AAAA",
                 },
             })
             return res.status(200).json({
