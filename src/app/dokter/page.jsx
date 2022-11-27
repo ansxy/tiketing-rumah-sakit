@@ -6,7 +6,7 @@ export default async function Page() {
     const datas = await FetchDokters()
 
     return (
-        <main className="w-full">
+        <>
             <section className="w-full flex flex-col justify-center items-center py-36 bg-healtick-cream">
                 <h1 className="text-2xl font-bold">Cari Dokter</h1>
                 <p className="text-lg">
@@ -23,6 +23,6 @@ export default async function Page() {
                     })}
                 </div>
             </section>
-        </main>
+        </>
     )
 }

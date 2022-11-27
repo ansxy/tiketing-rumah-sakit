@@ -48,7 +48,7 @@ export default function Page() {
         }
     }
     return (
-        <main className="w-full h-screen flex flex-col justify-center px-16 gap-4">
+        <>
             <h1 className="text-2xl font-bold">Buat Janji</h1>
             <section className="flex flex-row w-full">
                 <aside className="shadow-md justify-center items-center flex flex-col gap-2 px-6 py-12 whitespace-nowrap">
@@ -155,6 +155,6 @@ export default function Page() {
                     )}
                 </div>
             </section>
-        </main>
+        </>
     )
 }
