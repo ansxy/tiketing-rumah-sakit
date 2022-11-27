@@ -15,7 +15,6 @@ export default function DokterCard({ data }) {
             <Link
                 href={`/dokter/${data.id}/janji/`}
                 className="bg-healtick-darkgreen text-white p-4 my-4 rounded-2xl font-semibold"
-                
             >
                 Buat Janji
             </Link>
