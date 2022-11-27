@@ -7,7 +7,7 @@ import 'react-select-search/style.css'
 export default function DokterSearchForm() {
     const [nameSearch , setNameSearch] = useState()
     const [spesialis , setSpesialis] = useState()
-    const [dataSpesialis,setDataSpesialis] = useState()
+    const [rumahsakit,setRumahSakit] = useState()
     const [dataNama , setDataNama] = useState()
 
     const getSpesialis = ({query}) => {
@@ -30,6 +30,16 @@ export default function DokterSearchForm() {
         })
     }
 
+    const getRumahSakit =  ({query}) => {
+        return new Promise((resolve,reject) => {
+            fetch(`/api/rumahsakit/`).then(res => res.json()).then(({data})=> {
+                resolve(data.map(({nama,i})=> ({
+                    value : nama , name : nama 
+                }) ))
+            }).catch(reject)   
+        })
+    }
+
 
 
     const handleNameChange = (e) => {
@@ -40,21 +50,9 @@ export default function DokterSearchForm() {
         setSpesialis(e)
     }
 
-    useEffect(() => {
-        const getData = async() => {
-            const res = await axios.get(`/api/spesialisasi/${spesialis}`)
-            setDataSpesialis(res)
-        }
-        getData()
-    },[spesialis]) 
-
-    useEffect(() => {
-        const getData = async() => {
-            const res = await axios.get(`/api/user/dokter/${nameSearch}`)
-            setDataNama(res)
-        }
-        getData()
-    }, [nameSearch])
+    const handleRumahSakitChange = (e) => {
+        setRumahSakit(e)
+    }
 
     return (
         <form className="flex flex-col shadow-lg px-12 py-6 gap-3">
@@ -75,10 +73,8 @@ export default function DokterSearchForm() {
                 <label htmlFor="pilih-rumah-sakit" className="font-medium">
                     Pilih Rumah Sakit
                 </label> 
-                <input
-                    name="pilih-rumah-sakit"
-                    className="border rounded-md p-2"
-                ></input>
+                <SelectSearch search={true} value={rumahsakit} placeholder="Cari Rumah Sakit" getOptions={getRumahSakit} onChange={handleRumahSakitChange}/>
+
             </div>
             <div className="flex flex-col">
                 <label htmlFor="hari" className="font-medium">

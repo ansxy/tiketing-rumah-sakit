@@ -70,10 +70,20 @@ apiRoute.get('/api/user/dokter/:index',async( req,res) => {
     try {
         const result = await prisma.dokter.findMany({
             where : {
-                nama : {
-                    contains : index,
-                    mode: 'insensitive',
-            }
+                OR : [
+                  {
+                    nama : {
+                        contains : index,
+                        mode: 'insensitive',
+                  }  
+                },
+                {
+                    id : {
+                        contains : index,
+                        mode : 'insensitive',
+                    }
+                }
+                ],
         }
         })
         return res.status(200).json({
@@ -85,7 +95,7 @@ apiRoute.get('/api/user/dokter/:index',async( req,res) => {
             status : error.message,
         })
     }
-} )
+})
 export default apiRoute.handler()
 export const config = {
     api: {

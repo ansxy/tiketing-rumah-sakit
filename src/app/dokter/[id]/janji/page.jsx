@@ -4,15 +4,31 @@ import { useState, useEffect } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
-import { FetchDokter } from "../../../../lib/fetch-dokter"
+import Image from "next/image"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Page() {
     const id = usePathname().split("/")[2]
-
-    const { sessionData: session, status } = useSession()
+    const [startDate , setDate] = useState(new Date())
+    const { data: session, status } = useSession()
     const [loginData, setLoginData] = useState({
         email: "",
         password: "",
+    })
+
+    const [getData,setData] = useState()
+
+    useEffect(() => {
+        const getData = async() =>{
+            const res = await axios.get('')
+        } 
+    }, [getData])
+    
+
+    const [tiket,setTiket] = useState({
+        email : session ? session.user.email : ""
+        
     })
 
     const handleGoogleLoging = (e) => {
@@ -28,11 +44,34 @@ export default function Page() {
         })
     }
 
-    const handleSubmit = async (e) => {
+
+    const handleDate = (e) => {
+        setDate(e)
+    }
+
+
+
+    const handleLogin = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.post("/api/user/auth/registrasi", loginData)
             return res
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const data = await axios({
+                method : 'post',
+                url : `/api/tiket/${id}`,
+                data : {
+                    email : tiket.email
+                }
+            })
+            console.log(data)
         } catch (error) {
             console.log(error)
         }
@@ -46,7 +85,7 @@ export default function Page() {
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">Info Dokter</h2>
                         <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        <h3>{dokterData.nama}</h3>
+                        {/* <h3>{dokterData.nama}</h3> */}
                         <p>Spesialis</p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
@@ -90,11 +129,8 @@ export default function Page() {
                                         value = {startDate}
                                         minDate={startDate}
                                         className="border p-2 rounded-md"
+                                        onChange={handleDate}
                                     />
-                                    {/* <input
-                                        type="date"
-                                        className="border p-2 rounded-md"
-                                    /> */}
                                 </div>
                                 <div className="flex flex-row gap-2">
                                     <input type="checkbox" />
@@ -106,6 +142,7 @@ export default function Page() {
                                     </button>
                                     <input
                                         type="submit"
+                                        onClick={handleSubmit}
                                         className="basis-1/2 bg-healtick-green text-white mb-4 rounded-md py-2"
                                     />
                                 </div>
@@ -115,7 +152,7 @@ export default function Page() {
                         <div className="flex flex-col justify-center items-center w-full">
                             <form
                                 className="flex flex-col w-full gap-4"
-                                onSubmit={handleSubmit}
+                                onSubmit={handleLogin}
                                 method="GET"
                             >
                                 <div className="flex flex-col">
