@@ -9,14 +9,14 @@ const apiRoute = createRouter({
     },
 })
     .post(async (req, res) => {
-        const { spesiliasasi } = req.body
+        const { spesialisasi } = req.body
         const { dokter } = req.query
         try {
             const createSpesialisDokter =
                 await prisma.spesialisasi_dokter.create({
                     data: {
                         dokterId: dokter,
-                        spesiliasasiId: spesiliasasi,
+                        spesiliasasiId: spesialisasi,
                     },
                 })
             return res.status(200).json({
@@ -36,9 +36,9 @@ const apiRoute = createRouter({
                 },
                 include: {
                     klinik: {
-                        include : {
-                            rumah_sakit : true
-                        }
+                        include: {
+                            rumah_sakit: true,
+                        },
                     },
                     spesialisasi_dokter: {
                         include: {

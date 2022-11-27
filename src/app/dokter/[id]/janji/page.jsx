@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import TiketModal from "../../../../components/tiket-modal"
 
 export default function Page() {
     const id = usePathname().split("/")[2]
@@ -16,26 +17,29 @@ export default function Page() {
         email: "",
         password: "",
     })
+    const [antriModal, setAntriModal] = useState(false)
 
     const [getData, setData] = useState()
 
     useEffect(() => {
         const getData = async () => {
-            const res =await axios.get(`/api/rumahsakit/klinik/praktek/jam/${id}`)
+            const res = await axios.get(
+                `/api/rumahsakit/klinik/praktek/jam/${id}`,
+            )
             console.log(res)
         }
-       getData() 
-    },[id])
+        getData()
+    }, [id])
 
     useEffect(() => {
-        const getData = async() =>{
+        const getData = async () => {
             const res = await axios.get(`/api/spesialisasi/dokter/${id}`)
             setData(res ? res.data : "")
         }
         getData()
     }, [id])
 
-    const [tiket,setTiket] = useState()
+    const [tiket, setTiket] = useState()
     const handleGoogleLoging = (e) => {
         e.preventDefault()
         signIn("google")
@@ -63,39 +67,54 @@ export default function Page() {
         }
     }
 
-    
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setTiket({email : session ? session.user.email : ""})
+        setTiket({ email: session ? session.user.email : "" })
         try {
             const data = await axios({
-                method : 'POST',
-                url : `/api/tiket/${id}`,
-                data : tiket
+                method: "POST",
+                url: `/api/tiket/${id}`,
+                data: tiket,
             })
             return data
         } catch (error) {
             console.log(error)
         }
+
+        setAntriModal(!antriModal)
     }
 
     return (
         <>
             <h1 className="text-2xl font-bold">Buat Janji</h1>
-            <section className="flex flex-row w-full">
+            <section className="flex flex-row w-full h-screen">
                 <aside className="shadow-md justify-center items-center flex flex-col gap-2 px-6 py-12 whitespace-nowrap">
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">Info Dokter</h2>
-                        <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-
+                        <div className="w-24 h-24 rounded-full bg-slate-500 my-4 ">
+                            <Image
+                                src="/image/dokter.jpg"
+                                width={0}
+                                height={0}
+                                sizes={100}
+                                alt="Foto Dokter"
+                                className="w-full h-full object-cover rounded-full"
+                            ></Image>
+                        </div>
                         {getData ? (
                             <>
                                 <h3>{getData.nama}</h3>
                                 <p>
-                                    {
-                                        getData.spesialisasi_dokter.spesiliasasi
-                                            .name
-                                    }
+                                    {getData.spesialisasi_dokter ? (
+                                        <>
+                                            {
+                                                getData.spesialisasi_dokter
+                                                    .spesiliasasi.name
+                                            }
+                                        </>
+                                    ) : (
+                                        <></>
+                                    )}
                                 </p>
                             </>
                         ) : (
@@ -108,11 +127,22 @@ export default function Page() {
                                 <h2 className="text-lg font-semibold">
                                     Info Rumah Sakit
                                 </h2>
-                                <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
+                                <div className="w-24 h-24 rounded-full bg-slate-500 my-4 ">
+                                    <Image
+                                        src="/image/hospital.webp"
+                                        width={0}
+                                        height={0}
+                                        sizes={100}
+                                        alt="Foto Dokter"
+                                        className="w-full h-full object-cover rounded-full"
+                                    ></Image>
+                                </div>
                                 <h3>{getData.klinik.rumah_sakit.nama}</h3>
                                 <p>{getData.klinik.rumah_sakit.alamat}</p>
                             </>
-                        ) : (<></>)}
+                        ) : (
+                            <></>
+                        )}
                     </div>
                 </aside>
                 <div className="flex w-full px-72">
@@ -215,6 +245,11 @@ export default function Page() {
                     )}
                 </div>
             </section>
+            {antriModal ? (
+                <TiketModal value={antriModal} setValue={setAntriModal} />
+            ) : (
+                <></>
+            )}
         </>
     )
 }
