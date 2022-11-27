@@ -22,7 +22,7 @@ const apiRoute = createRouter({
 .post(async(req,res) => {
     const {email , password} = req.body
     try{
-        const verifiyLogin = await prisma.pasien.findFirst({
+        const verifiyLogin = await prisma.User.findFirst({
             where : {
                 email : email
             },

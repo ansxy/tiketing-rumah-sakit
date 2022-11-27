@@ -4,26 +4,36 @@ import { useState, useEffect } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
 import { FetchDokter } from "../../../../lib/fetch-dokter"
 
 export default function Page() {
     const id = usePathname().split("/")[2]
-
-    const { sessionData: session, status } = useSession()
+    const [startDate , setDate] = useState(new Date())
+    const { data: session, status } = useSession()
     const [loginData, setLoginData] = useState({
         email: "",
         password: "",
     })
-    const [dokterData, setDokterData] = useState({})
+
+    const [getData,setData] = useState()
 
     useEffect(() => {
-        async function getDokterData() {
-            const { data } = await FetchDokter({ id })
-            setDokterData(data)
-        }
-
-        getDokterData()
+        const getData = async() =>{
+            const res = await axios.get(`/api/spesialisasi/dokter/${id}`)
+            setData(res ? res.data: "")   
+        } 
+        getData()
     }, [id])
+
+    console.log(getData ? getData : "")
+
+    const [tiket,setTiket] = useState({
+        email : session ? session.user.email : ""
+        
+    })
 
     const handleGoogleLoging = (e) => {
         e.preventDefault()
@@ -38,7 +48,14 @@ export default function Page() {
         })
     }
 
-    const handleSubmit = async (e) => {
+
+    const handleDate = (e) => {
+        setDate(e)
+    }
+
+
+
+    const handleLogin = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.post("/api/user/auth/registrasi", loginData)
@@ -47,6 +64,21 @@ export default function Page() {
             console.log(error)
         }
     }
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const data = await axios({
+                method : 'post',
+                url : `/api/tiket/${id}`,
+                data : tiket
+            })
+            console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <>
             <h1 className="text-2xl font-bold">Buat Janji</h1>
@@ -55,8 +87,15 @@ export default function Page() {
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">Info Dokter</h2>
                         <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        <h3>{dokterData.nama}</h3>
-                        <p>Spesialis</p>
+
+                        {getData ? (
+                            <>
+                                <h3>{getData.nama}</h3>
+                                <p>{getData.spesialisasi_dokter.spesiliasasi.name}</p>
+                            </>
+                        ) : (
+                            <></>
+                        )}
                     </div>
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">
@@ -77,10 +116,12 @@ export default function Page() {
                                 </div>
                                 <h2 className="font-medium">Pasien :</h2>
                                 <div className="flex flex-row mt-2 px-4 py-6 items-center gap-6 border border-healtick-green rounded-lg">
-                                    <div className="w-24 h-24 rounded-full bg-slate-500"></div>
+                                    <div className="w-24 h-24 rounded-full bg-slate-500">
+                                        <Image src={session.user.image} width={500} height={500} alt="imageprofile" className="rounded-full"/>
+                                    </div>
                                     <div className="flex flex-col">
                                         <h3 className="font-semibold">
-                                            Nama Pasien
+                                            {session.user.name}
                                         </h3>
                                         <p className="font-medium">
                                             <span>(Umur Pasien)</span> Tanggal
@@ -92,9 +133,12 @@ export default function Page() {
                             <form className="flex flex-col gap-2 w-2/3">
                                 <div className="flex flex-col gap-1">
                                     <label>Tanggal Janji</label>
-                                    <input
-                                        type="date"
+                                    <DatePicker
+                                        selected={startDate}
+                                        value = {startDate}
+                                        minDate={startDate}
                                         className="border p-2 rounded-md"
+                                        onChange={handleDate}
                                     />
                                 </div>
                                 <div className="flex flex-row gap-2">
@@ -107,6 +151,7 @@ export default function Page() {
                                     </button>
                                     <input
                                         type="submit"
+                                        onClick={handleSubmit}
                                         className="basis-1/2 bg-healtick-green text-white mb-4 rounded-md py-2"
                                     />
                                 </div>
@@ -116,7 +161,7 @@ export default function Page() {
                         <div className="flex flex-col justify-center items-center w-full">
                             <form
                                 className="flex flex-col w-full gap-4"
-                                onSubmit={handleSubmit}
+                                onSubmit={handleLogin}
                                 method="GET"
                             >
                                 <div className="flex flex-col">
