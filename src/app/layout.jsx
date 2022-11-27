@@ -8,7 +8,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <SessionProvider>
-                <body className="w-screen h-full overflow-x-hidden">
+                <body className="w-screen h-screen overflow-x-hidden">
                     <Header />
                     {children}
                     <Footer />
