@@ -121,8 +121,8 @@ model tiket {
 
 model post{
   id String @id @default(cuid())
-  post_name String
   destail_post String
+  post_name String
   comment comment []
 }
 
