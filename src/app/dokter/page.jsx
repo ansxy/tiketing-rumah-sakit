@@ -1,19 +1,18 @@
 import DokterCard from "../../components/dokter-card"
 import DokterSearchForm from "../../components/dokter-search-form"
-import { FetchDokter } from "../../lib/fetch-dokter"
 import { FetchDokters } from "../../lib/fetch-dokters"
 
 export default async function Page() {
     const datas = await FetchDokters()
     return (
         <>
-            <section className="w-full flex flex-col justify-center items-center py-36 bg-healtick-cream">
+            <section className="w-full flex flex-col justify-center items-center py-36 bg-healtick-cream rounded-b-lg">
                 <h1 className="text-2xl font-bold">Cari Dokter</h1>
                 <p className="text-lg">
                     Cari kebutuhan kesehatanmu disini dengan cepat
                 </p>
             </section>
-            <section className="w-full flex flex-row py-16">
+            <section className="w-full flex flex-row px-12 py-16">
                 <aside className="flex justify-center items-center basis-1/3">
                     <DokterSearchForm />
                 </aside>
