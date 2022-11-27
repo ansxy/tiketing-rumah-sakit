@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
+import { FetchDokter } from "../../../../lib/fetch-dokter"
 
 export default function Page() {
     const id = usePathname().split("/")[2]
@@ -21,10 +22,13 @@ export default function Page() {
 
     useEffect(() => {
         const getData = async() =>{
-            const res = await axios.get('')
+            const res = await axios.get(`/api/spesialisasi/dokter/${id}`)
+            setData(res ? res.data: "")   
         } 
-    }, [getData])
-    
+        getData()
+    }, [id])
+
+    console.log(getData ? getData : "")
 
     const [tiket,setTiket] = useState({
         email : session ? session.user.email : ""
@@ -67,9 +71,7 @@ export default function Page() {
             const data = await axios({
                 method : 'post',
                 url : `/api/tiket/${id}`,
-                data : {
-                    email : tiket.email
-                }
+                data : tiket
             })
             console.log(data)
         } catch (error) {
@@ -85,8 +87,15 @@ export default function Page() {
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">Info Dokter</h2>
                         <div className="w-24 h-24 rounded-full bg-slate-500 my-4"></div>
-                        {/* <h3>{dokterData.nama}</h3> */}
-                        <p>Spesialis</p>
+
+                        {getData ? (
+                            <>
+                                <h3>{getData.nama}</h3>
+                                <p>{getData.spesialisasi_dokter.spesiliasasi.name}</p>
+                            </>
+                        ) : (
+                            <></>
+                        )}
                     </div>
                     <div className="flex flex-col justify-center items-center">
                         <h2 className="text-lg font-semibold">

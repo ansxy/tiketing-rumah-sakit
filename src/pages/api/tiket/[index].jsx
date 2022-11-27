@@ -23,11 +23,10 @@ const apiRoute =  createRouter({
   } catch (error) {
     return res.status(500).json({error: error.message})
   }
-}).post(async(req,res)=> {
+})
+apiRoute.post('/api/tiket/:index', async (req, res) => {
   const {index} = req.query
-  // const {email} = req.body
-  console.log(req.body)
-
+  const {email} = req.body
   try {
     const countJam = await prisma.jam_praktek.findMany({
       where : {
@@ -56,10 +55,9 @@ const apiRoute =  createRouter({
     return res.status(500).json({error: error.message})
   }
 })
-
 export default apiRoute.handler();
 export const config = {
   api: {
-    bodyParser: false, // Disallow body parsing, consume as stream
+    bodyParser: true, // Disallow body parsing, consume as stream
   },
 };
